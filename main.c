@@ -54,7 +54,7 @@ cleanup()
 FILE *
 cpyfile(const char *src, const char *tgt)
 {       FILE *inp, *out;
-        char buf[1024];
+        char buf[4096];
 
         inp = fopen(src, "r");
         out = fopen(tgt, "w");
@@ -62,8 +62,8 @@ cpyfile(const char *src, const char *tgt)
         {       printf("ltl2ba: cannot cp %s to %s\n", src, tgt);
                 alldone(1);
         }
-        while (fgets(buf, 1024, inp))
-                fprintf(out, "%s", buf);
+        while (fgets(buf, sizeof buf, inp))
+            fputs(buf, out);
         fclose(inp);
         return out;
 }
