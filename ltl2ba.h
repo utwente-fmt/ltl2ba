@@ -246,3 +246,24 @@ typedef Node	*Nodeptr;
 #define Assert(x, y)	{ if (!(x)) { tl_explain(y); \
 			  Fatal(": assertion failed\n",(char *)0); } }
 #define min(x,y)        ((x<y)?x:y)
+
+/* from main.c */
+extern FILE *tl_out;
+
+extern int	tl_stats;              /* time and size stats */
+extern int tl_simp_log;                /* logical simplification */
+extern int tl_simp_diff;               /* automata simplification */
+extern int tl_simp_fly;                /* on the fly simplification */
+extern int tl_simp_scc;                /* use scc simplification */
+extern int tl_fjtofj;                  /* 2eme fj */
+extern int	tl_errs;
+extern int	tl_verbose;
+extern int	tl_terse;
+extern unsigned long	All_Mem;
+
+int  ltl2ba_init();
+int  set_uform(const char *str);
+void append_uform(const char *str);
+void put_uform();
+void alldone(int status);
+

@@ -18,6 +18,7 @@ libltl2ba_la_SOURCES += rewrt.c
 libltl2ba_la_SOURCES += cache.c
 libltl2ba_la_SOURCES += alternating.c
 libltl2ba_la_SOURCES += generalized.c
+libltl2ba_la_SOURCES += util.c
 libltl2ba_la_SOURCES += ltl2ba.h
 
 # make

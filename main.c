@@ -30,40 +30,29 @@
 /* Some of the code in this file was taken from the Spin software         */
 /* Written by Gerard J. Holzmann, Bell Laboratories, U.S.A.               */
 
+#include "config.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+
 #include "ltl2ba.h"
 
-FILE	*tl_out;
-
-int	tl_stats     = 0; /* time and size stats */	
-int tl_simp_log  = 1; /* logical simplification */
-int tl_simp_diff = 1; /* automata simplification */
-int tl_simp_fly  = 1; /* on the fly simplification */
-int tl_simp_scc  = 1; /* use scc simplification */
-int tl_fjtofj    = 1; /* 2eme fj */
-int	tl_errs      = 0;
-int	tl_verbose   = 0;
-int	tl_terse     = 0;
-unsigned long	All_Mem = 0;
-
-static char	uform[4096];
-static int	hasuform=0, cnt=0;
 static char     **ltl_file = (char **)0;
 static char     **add_ltl  = (char **)0;
-static char     out1[64];
 
 static void	tl_endstats(void);
-static void	non_fatal(char *, char *);
+static const char *outfile;
 
 void
-alldone(int estatus)
+cleanup()
 {
-        if (strlen(out1) > 0)
-                (void) unlink((const char *)out1);
-        exit(estatus);
+    if (outfile != NULL) {
+        unlink (outfile);
+    }
 }
 
 FILE *
-cpyfile(char *src, char *tgt)
+cpyfile(const char *src, const char *tgt)
 {       FILE *inp, *out;
         char buf[1024];
 
@@ -77,37 +66,6 @@ cpyfile(char *src, char *tgt)
                 fprintf(out, "%s", buf);
         fclose(inp);
         return out;
-}
-
-char *
-emalloc(int n)
-{       char *tmp;
-
-        if (!(tmp = (char *) malloc(n)))
-                fatal("not enough memory", (char *)0);
-        memset(tmp, 0, n);
-        return tmp;
-}
-
-int
-tl_Getchar(void)
-{
-	if (cnt < hasuform)
-		return uform[cnt++];
-	cnt++;
-	return -1;
-}
-
-void
-put_uform(void)
-{
-	fprintf(tl_out, "%s", uform);
-}
-
-void
-tl_UnGetchar(void)
-{
-	if (cnt > 0) cnt--;
 }
 
 void
@@ -133,6 +91,7 @@ usage(void)
 int
 tl_main(int argc, char *argv[])
 {       int i;
+        int hasuform = 0;
 	while (argc > 1 && argv[1][0] == '-')
 	{	switch (argv[1][1]) {
 		case 'f':	argc--; argv++;
@@ -142,8 +101,7 @@ tl_main(int argc, char *argv[])
 					||  argv[1][i] == '\n')
 						argv[1][i] = ' ';
 				}
-				strcpy(uform, argv[1]);
-				hasuform = strlen(uform);
+                                hasuform = set_uform(argv[1]);
 				break;
 		default :	usage();
 		}
@@ -157,9 +115,9 @@ tl_main(int argc, char *argv[])
 
 int
 main(int argc, char *argv[])
-{	int i;
-	tl_out = stdout;
-
+{       ltl2ba_init();
+        tl_out = stdout;
+        atexit(cleanup);
 	while (argc > 1 && argv[1][0] == '-')
         {       switch (argv[1][1]) {
                 case 'F': ltl_file = (char **) (argv+2);
@@ -193,164 +151,27 @@ main(int argc, char *argv[])
                 *ltl_file = (char *) formula;
         }
         if (argc > 1)
-        {       char cmd[128], out2[64];
-                strcpy(out1, "_tmp1_");
-                strcpy(out2, "_tmp2_");
-                tl_out = cpyfile(argv[1], out2);
+        {       outfile = "_tmp2_";
+                tl_out = cpyfile(argv[1], outfile);
                 tl_main(2, add_ltl);  
                 fclose(tl_out);
+                if (rename(outfile, argv[1]) != 0) {
+                    perror("rename");
+                    alldone(1);
+                }
+                outfile = NULL;
         } else 
 	{
                 if (argc > 0)
                         exit(tl_main(2, add_ltl));
 		usage();
 	}
-}
-
-/* Subtract the `struct timeval' values X and Y, storing the result X-Y in RESULT.
-   Return 1 if the difference is negative, otherwise 0.  */
- 
-int
-timeval_subtract (result, x, y)
-struct timeval *result, *x, *y;
-{
-	if (x->tv_usec < y->tv_usec) {
-		x->tv_usec += 1000000;
-		x->tv_sec--;
-	}
-	
-	/* Compute the time remaining to wait. tv_usec is certainly positive. */
-	result->tv_sec = x->tv_sec - y->tv_sec;
-	result->tv_usec = x->tv_usec - y->tv_usec;
-	
-	/* Return 1 if result is negative. */
-	return x->tv_sec < y->tv_sec;
+        exit (EXIT_SUCCESS);
 }
 
 static void
 tl_endstats(void)
-{	extern int Stack_mx;
-	printf("\ntotal memory used: %9ld\n", All_Mem);
-	/*printf("largest stack sze: %9d\n", Stack_mx);*/
+{	printf("\ntotal memory used: %9ld\n", All_Mem);
 	/*cache_stats();*/
 	a_stats();
 }
-
-#define Binop(a)		\
-		fprintf(tl_out, "(");	\
-		dump(n->lft);		\
-		fprintf(tl_out, a);	\
-		dump(n->rgt);		\
-		fprintf(tl_out, ")")
-
-void
-dump(Node *n)
-{
-	if (!n) return;
-
-	switch(n->ntyp) {
-	case OR:	Binop(" || "); break;
-	case AND:	Binop(" && "); break;
-	case U_OPER:	Binop(" U ");  break;
-	case V_OPER:	Binop(" V ");  break;
-#ifdef NXT
-	case NEXT:
-		fprintf(tl_out, "X");
-		fprintf(tl_out, " (");
-		dump(n->lft);
-		fprintf(tl_out, ")");
-		break;
-#endif
-	case NOT:
-		fprintf(tl_out, "!");
-		fprintf(tl_out, " (");
-		dump(n->lft);
-		fprintf(tl_out, ")");
-		break;
-	case FALSE:
-		fprintf(tl_out, "false");
-		break;
-	case TRUE:
-		fprintf(tl_out, "true");
-		break;
-	case PREDICATE:
-		fprintf(tl_out, "(%s)", n->sym->name);
-		break;
-	case -1:
-		fprintf(tl_out, " D ");
-		break;
-	default:
-		printf("Unknown token: ");
-		tl_explain(n->ntyp);
-		break;
-	}
-}
-
-void
-tl_explain(int n)
-{
-	switch (n) {
-	case ALWAYS:	printf("[]"); break;
-	case EVENTUALLY: printf("<>"); break;
-	case IMPLIES:	printf("->"); break;
-	case EQUIV:	printf("<->"); break;
-	case PREDICATE:	printf("predicate"); break;
-	case OR:	printf("||"); break;
-	case AND:	printf("&&"); break;
-	case NOT:	printf("!"); break;
-	case U_OPER:	printf("U"); break;
-	case V_OPER:	printf("V"); break;
-#ifdef NXT
-	case NEXT:	printf("X"); break;
-#endif
-	case TRUE:	printf("true"); break;
-	case FALSE:	printf("false"); break;
-	case ';':	printf("end of formula"); break;
-	default:	printf("%c", n); break;
-	}
-}
-
-static void
-non_fatal(char *s1, char *s2)
-{	extern int tl_yychar;
-	int i;
-
-	printf("ltl2ba: ");
-	if (s2)
-		printf(s1, s2);
-	else
-		printf(s1);
-	if (tl_yychar != -1 && tl_yychar != 0)
-	{	printf(", saw '");
-		tl_explain(tl_yychar);
-		printf("'");
-	}
-	printf("\nltl2ba: %s\n---------", uform);
-	for (i = 0; i < cnt; i++)
-		printf("-");
-	printf("^\n");
-	fflush(stdout);
-	tl_errs++;
-}
-
-void
-tl_yyerror(char *s1)
-{
-	Fatal(s1, (char *) 0);
-}
-
-void
-Fatal(char *s1, char *s2)
-{
-  non_fatal(s1, s2);
-  alldone(1);
-}
-
-void
-fatal(char *s1, char *s2)
-{
-        non_fatal(s1, s2);
-        alldone(1);
-}
-
-
