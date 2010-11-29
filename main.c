@@ -109,6 +109,7 @@ tl_main(int argc, char *argv[])
 	}
 	if (hasuform == 0) usage();
 	tl_parse();
+	print_spin_buchi();
 	if (tl_stats) tl_endstats();
 	return tl_errs;
 }

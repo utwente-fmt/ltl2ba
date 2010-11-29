@@ -201,6 +201,13 @@ void    mk_alternating(Node *);
 void    mk_generalized();
 void    mk_buchi();
 
+BState* buchi_bstates();
+int     buchi_accept();
+
+void    print_spin_buchi();
+void    print_dot_buchi();
+
+
 ATrans *dup_trans(ATrans *);
 ATrans *merge_trans(ATrans *, ATrans *);
 void do_merge_trans(ATrans **, ATrans *, ATrans *);

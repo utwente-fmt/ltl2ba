@@ -421,6 +421,12 @@ void make_btrans(BState *s) /* creates all the transitions from a state */
 }
 
 /********************************************************************\
+|*                  Export of the Buchi automaton                   *|
+\********************************************************************/
+BState* buchi_bstates() { return bstates; }
+int     buchi_accept() { return accept; }
+
+/********************************************************************\
 |*                  Display of the Buchi automaton                  *|
 \********************************************************************/
 
@@ -459,6 +465,50 @@ void print_buchi(BState *s) /* dumps the Buchi automaton */
       fprintf(tl_out, "_%i\n", t->to->id);
     }
   }
+}
+
+static void
+print_dot_buchi_1(BState *s)
+{
+    BTrans *t;
+    if(s == bstates) return;
+
+    print_dot_buchi_1(s->nxt); /* begins with the last state */
+
+    fprintf(tl_out, "%i[label=\"%i\"%s];\n", s->id, s->id,
+            s->final == accept ? ",shape=doublecircle" : "");
+
+    for(t = s->trans->nxt; t != s->trans; t = t->nxt) {
+        fprintf(tl_out, "%d -> %d [label=\"", s->id, t->to->id);
+
+        /* print label */
+        BTrans *t1;
+        spin_print_set(t->pos, t->neg);
+        for(t1 = t; t1->nxt != s->trans; ) {
+            if (t1->nxt->to->id == t->to->id &&
+                t1->nxt->to->final == t->to->final) {
+                fprintf(tl_out, ") || (");
+                spin_print_set(t1->nxt->pos, t1->nxt->neg);
+                t1->nxt = t1->nxt->nxt;
+            } else {
+                t1 = t1->nxt;
+            }
+        }
+        fprintf(tl_out, "\"];\n");
+    }
+}
+
+void
+print_dot_buchi()
+{
+    fprintf(tl_out,
+            "digraph g {\n"
+            "rankdir=\"LR\";\n"
+            "node [shape=circle];\n"
+            "Init[shape=plaintext,label=\"\"];\n"
+            "Init -> %i;\n", -1);
+    print_dot_buchi_1(bstates->nxt);
+    fprintf(tl_out, "}\n");
 }
 
 void print_spin_buchi() {
@@ -647,6 +697,4 @@ void mk_buchi()
       fprintf(tl_out, "\n");
     }
   }
-
-  print_spin_buchi();
 }
