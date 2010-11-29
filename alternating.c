@@ -41,7 +41,7 @@ char **sym_table;
 ATrans **transition;
 struct rusage tr_debut, tr_fin;
 struct timeval t_diff;
-int *final_set, node_id = 1, sym_id = 0, node_size, sym_size;
+int *final_set, node_id = 1, sym_id = 0, node_size, sym_size, n_sym;
 int astate_count = 0, atrans_count = 0;
 
 ATrans *build_alternating(Node *p);
@@ -409,9 +409,9 @@ void mk_alternating(Node *p) /* generates an alternating automaton for p */
   transition = (ATrans **) tl_emalloc(node_size * sizeof(ATrans *));
   node_size = node_size / (8 * sizeof(int)) + 1;
 
-  sym_size = calculate_sym_size(p); /* number of predicates */
-  if(sym_size) sym_table = (char **) tl_emalloc(sym_size * sizeof(char *));
-  sym_size = sym_size / (8 * sizeof(int)) + 1;
+  n_sym = calculate_sym_size(p); /* number of predicates */
+  if(n_sym) sym_table = (char **) tl_emalloc(n_sym * sizeof(char *));
+  sym_size = n_sym / (8 * sizeof(int)) + 1;
   
   final_set = make_set(-1, 0);
   transition[0] = boolean(p); /* generates the alternating automaton */
