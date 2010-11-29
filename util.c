@@ -67,9 +67,9 @@ non_fatal(char *s1, char *s2)
 
 	printf("ltl2ba: ");
 	if (s2)
-		printf(s1, s2);
+		fprintf(stdout, s1, s2);
 	else
-		printf(s1);
+		fputs(s1, stdout);
 	if (tl_yychar != -1 && tl_yychar != 0)
 	{	printf(", saw '");
 		tl_explain(tl_yychar);

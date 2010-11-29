@@ -146,7 +146,6 @@ int get_sym_id(char *s) /* finds the id of a predicate, or attributes one */
 ATrans *boolean(Node *p) /* computes the transitions to boolean nodes -> next & init */
 {
   ATrans *t1, *t2, *lft, *rgt, *result = (ATrans *)0;
-  int id;
   switch(p->ntyp) {
   case TRUE:
     result = emalloc_atrans();
@@ -433,8 +432,8 @@ void mk_alternating(Node *p) /* generates an alternating automaton for p */
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nBuilding and simplification of the alternating automaton: %i.%06is",
-		t_diff.tv_sec, t_diff.tv_usec);
+    fprintf(tl_out, "\nBuilding and simplification of the alternating automaton: %lli.%06is",
+            (long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i states, %i transitions\n", astate_count, atrans_count);
   }
 

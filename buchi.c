@@ -110,8 +110,8 @@ int simplify_btrans() /* simplifies the transitions */
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nSimplification of the Buchi automaton - transitions: %i.%06is",
-		t_diff.tv_sec, t_diff.tv_usec);
+    fprintf(tl_out, "\nSimplification of the Buchi automaton - transitions: %lli.%06is",
+            (long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i transitions removed\n", changed);
 
   }
@@ -129,7 +129,6 @@ void remove_btrans(BState *to)
 {             /* redirects transitions before removing a state from the automaton */
   BState *s;
   BTrans *t;
-  int i;
   for (s = bstates->nxt; s != bstates; s = s->nxt)
     for (t = s->trans->nxt; t != s->trans; t = t->nxt)
       if (t->to == to) { /* transition to a state with no transitions */
@@ -225,8 +224,8 @@ int simplify_bstates() /* eliminates redundant states */
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nSimplification of the Buchi automaton - states: %i.%06is",
-		t_diff.tv_sec, t_diff.tv_usec);
+    fprintf(tl_out, "\nSimplification of the Buchi automaton - states: %lli.%06is",
+            (long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i states removed\n", changed);
   }
 
@@ -465,7 +464,7 @@ void print_buchi(BState *s) /* dumps the Buchi automaton */
 void print_spin_buchi() {
   BTrans *t;
   BState *s;
-  int accept_all = 0, init_count = 0;
+  int accept_all = 0;
   if(bstates->nxt == bstates) { /* empty automaton */
     fprintf(tl_out, "never {    /* ");
     put_uform();
@@ -620,8 +619,8 @@ void mk_buchi()
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nBuilding the Buchi automaton : %i.%06is",
-		t_diff.tv_sec, t_diff.tv_usec);
+    fprintf(tl_out, "\nBuilding the Buchi automaton : %lli.%06is",
+            (long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i states, %i transitions\n", bstate_count, btrans_count);
   }
 

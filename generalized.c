@@ -151,8 +151,8 @@ int simplify_gtrans() /* simplifies the transitions */
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nSimplification of the generalized Buchi automaton - transitions: %i.%06is",
-		t_diff.tv_sec, t_diff.tv_usec);
+    fprintf(tl_out, "\nSimplification of the generalized Buchi automaton - transitions: %lli.%06is",
+            (long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i transitions removed\n", changed);
   }
 
@@ -244,8 +244,8 @@ int simplify_gstates() /* eliminates redundant states */
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nSimplification of the generalized Buchi automaton - states: %i.%06is",
-		t_diff.tv_sec, t_diff.tv_usec);
+    fprintf(tl_out, "\nSimplification of the generalized Buchi automaton - states: %lli.%06is",
+            (long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i states removed\n", changed);
   }
 
@@ -389,8 +389,7 @@ GState *find_gstate(int *set, GState *s)
 void make_gtrans(GState *s) { /* creates all the transitions from a state */
   int i, *list, state_trans = 0, trans_exist = 1;
   GState *s1;
-  GTrans *t;
-  ATrans *t1, *free;
+  ATrans *t1;
   AProd *prod = (AProd *)tl_emalloc(sizeof(AProd)); /* initialization */
   prod->nxt = prod;
   prod->prv = prod;
@@ -570,7 +569,6 @@ void mk_generalized()
 { /* generates a generalized Buchi automaton from the alternating automaton */
   ATrans *t;
   GState *s;
-  int i;
 
   if(tl_stats) getrusage(RUSAGE_SELF, &tr_debut);
 
@@ -618,13 +616,13 @@ void mk_generalized()
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nBuilding the generalized Buchi automaton : %i.%06is",
-		t_diff.tv_sec, t_diff.tv_usec);
+    fprintf(tl_out, "\nBuilding the generalized Buchi automaton : %lli.%06is",
+		(long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i states, %i transitions\n", gstate_count, gtrans_count);
   }
 
   tfree(gstack);
-  /*for(i = 0; i < node_id; i++) /* frees the data from the alternating automaton */
+  /*for(i = 0; i < node_id; i++) / * frees the data from the alternating automaton */
   /*free_atrans(transition[i], 1);*/
   free_all_atrans();
   tfree(transition);

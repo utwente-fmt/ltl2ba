@@ -60,7 +60,8 @@ canonical(Node *n)
 {	Node *m;	/* assumes input is right_linked */
 
 	if (!n) return n;
-	if (m = in_cache(n))
+        m = in_cache(n);
+	if (m)
 		return m;
 
 	n->rgt = canonical(n->rgt);
