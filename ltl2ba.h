@@ -260,6 +260,8 @@ extern int	tl_verbose;
 extern int	tl_terse;
 extern unsigned long	All_Mem;
 
+extern int (*tl_yylex)();               /* hook for lexer */
+
 int  ltl2ba_init();
 int  set_uform(const char *str);
 void append_uform(const char *str);

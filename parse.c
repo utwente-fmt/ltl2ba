@@ -32,7 +32,6 @@
 
 #include "ltl2ba.h"
 
-extern int	tl_yylex(void);
 extern int	tl_verbose, tl_simp_log;
 
 int	tl_yychar = 0;

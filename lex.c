@@ -36,9 +36,10 @@
 
 static Symbol	*symtab[Nhash+1];
 static int	tl_lex(void);
+int (*tl_yylex)() = tl_lex;
 
 extern YYSTYPE	tl_yylval;
-char	yytext[2048];
+static char	yytext[2048];
 
 #define Token(y)        tl_yylval = tl_nn(y,ZN,ZN); return y
 
@@ -86,14 +87,6 @@ follow(int tok, int ifyes, int ifno)
 	return ifno;
 }
 
-int
-tl_yylex(void)
-{	int c = tl_lex();
-#if 0
-	printf("c = %d\n", c);
-#endif
-	return c;
-}
 
 static int
 tl_lex(void)
