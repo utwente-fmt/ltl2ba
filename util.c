@@ -44,7 +44,7 @@ set_uform(const char *arg)
 void
 append_uform(const char *arg)
 {
-    strncat(uform, arg, sizeof uform);
+    strlcat(uform, arg, sizeof uform);
 }
 
 void
