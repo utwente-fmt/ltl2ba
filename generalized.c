@@ -151,7 +151,7 @@ int simplify_gtrans() /* simplifies the transitions */
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nSimplification of the generalized Buchi automaton - transitions: %lli.%06is",
+    fprintf(tl_out, "\nSimplification of the generalized Buchi automaton - transitions: %lli.%06ld",
             (long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i transitions removed\n", changed);
   }
@@ -244,7 +244,7 @@ int simplify_gstates() /* eliminates redundant states */
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nSimplification of the generalized Buchi automaton - states: %lli.%06is",
+    fprintf(tl_out, "\nSimplification of the generalized Buchi automaton - states: %lli.%06ld",
             (long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i states removed\n", changed);
   }
@@ -616,7 +616,7 @@ void mk_generalized()
   if(tl_stats) {
     getrusage(RUSAGE_SELF, &tr_fin);
     timeval_subtract (&t_diff, &tr_fin.ru_utime, &tr_debut.ru_utime);
-    fprintf(tl_out, "\nBuilding the generalized Buchi automaton : %lli.%06is",
+    fprintf(tl_out, "\nBuilding the generalized Buchi automaton : %lli.%06ld",
 		(long long int)t_diff.tv_sec, t_diff.tv_usec);
     fprintf(tl_out, "\n%i states, %i transitions\n", gstate_count, gtrans_count);
   }
