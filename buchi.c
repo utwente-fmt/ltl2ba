@@ -45,7 +45,7 @@ BState *bstack, *bstates, *bremoved;
 BScc *scc_stack;
 int bstate_count = 0, btrans_count = 0, rank;
 
-static int accept;
+static int _accept;
 
 /********************************************************************\
 |*        Simplification of the generalized Buchi automaton         *|
@@ -172,8 +172,8 @@ void retarget_all_btrans()
 int all_btrans_match(BState *a, BState *b) /* decides if the states are equivalent */
 {	
   BTrans *s, *t;
-  if (((a->final == accept) || (b->final == accept)) &&
-      (a->final + b->final != 2 * accept) && 
+  if (((a->final == _accept) || (b->final == _accept)) &&
+      (a->final + b->final != 2 * _accept) && 
       a->incoming >=0 && b->incoming >=0)
     return 0; /* the states have to be both final or both non final */
 
@@ -334,7 +334,7 @@ BState *find_bstate(GState **state, int final, BState *s)
 
 int next_final(int *set, int fin) /* computes the 'final' value */
 {
-  if((fin != accept) && in_set(set, final[fin + 1]))
+  if((fin != _accept) && in_set(set, final[fin + 1]))
     return next_final(set, fin + 1);
   return fin;
 }
@@ -347,7 +347,7 @@ void make_btrans(BState *s) /* creates all the transitions from a state */
   BState *s1;
   if(s->gstate->trans)
     for(t = s->gstate->trans->nxt; t != s->gstate->trans; t = t->nxt) {
-      int fin = next_final(t->final, (s->final == accept) ? 0 : s->final);
+      int fin = next_final(t->final, (s->final == _accept) ? 0 : s->final);
       BState *to = find_bstate(&t->to, fin, s);
       
       for(t1 = s->trans->nxt; t1 != s->trans;) {
@@ -426,7 +426,7 @@ void make_btrans(BState *s) /* creates all the transitions from a state */
 |*                  Export of the Buchi automaton                   *|
 \********************************************************************/
 BState* buchi_bstates() { return bstates; }
-int     buchi_accept() { return accept; }
+int     buchi_accept() { return _accept; }
 
 /********************************************************************\
 |*                  Display of the Buchi automaton                  *|
@@ -443,7 +443,7 @@ void print_buchi(BState *s) /* dumps the Buchi automaton */
   if(s->id == -1)
     fprintf(tl_out, "init");
   else {
-    if(s->final == accept)
+    if(s->final == _accept)
       fprintf(tl_out, "accept");
     else
       fprintf(tl_out, "T%i", s->final);
@@ -460,7 +460,7 @@ void print_buchi(BState *s) /* dumps the Buchi automaton */
     if(t->to->id == -1) 
       fprintf(tl_out, "init\n");
     else {
-      if(t->to->final == accept)
+      if(t->to->final == _accept)
 	fprintf(tl_out, "accept");
       else
 	fprintf(tl_out, "T%i", t->to->final);
@@ -478,7 +478,7 @@ print_dot_buchi_1(BState *s)
     print_dot_buchi_1(s->nxt); /* begins with the last state */
 
     fprintf(tl_out, "%i[label=\"%i\"%s];\n", s->id, s->id,
-            s->final == accept ? ",shape=doublecircle" : "");
+            s->final == _accept ? ",shape=doublecircle" : "");
 
     for(t = s->trans->nxt; t != s->trans; t = t->nxt) {
         fprintf(tl_out, "%d -> %d [label=\"", s->id, t->to->id);
@@ -546,7 +546,7 @@ void print_spin_buchi() {
       accept_all = 1;
       continue;
     }
-    if(s->final == accept)
+    if(s->final == _accept)
       fprintf(tl_out, "accept_");
     else fprintf(tl_out, "T%i_", s->final);
     if(s->id == -1)
@@ -570,7 +570,7 @@ void print_spin_buchi() {
 	}
 	else  t1 = t1->nxt;
       fprintf(tl_out, ") -> goto ");
-      if(t->to->final == accept)
+      if(t->to->final == _accept)
 	fprintf(tl_out, "accept_");
       else fprintf(tl_out, "T%i_", t->to->final);
       if(t->to->id == 0)
@@ -598,7 +598,7 @@ void mk_buchi()
   BState *s = (BState *)tl_emalloc(sizeof(BState));
   GTrans *t;
   BTrans *t1;
-  accept = final[0] - 1;
+  _accept = final[0] - 1;
   
   if(tl_stats) getrusage(RUSAGE_SELF, &tr_debut);
 

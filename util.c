@@ -13,26 +13,7 @@ int	tl_verbose   = 0;
 int	tl_terse     = 0;
 unsigned long	All_Mem = 0;
 
-#ifdef __GLIBC__
-size_t strlcpy(char *dst, const char *src, size_t size)
-{
-   size_t bytes = 0;
-   char *q = dst;
-   const char *p = src;
-   char ch;
-
-   while ((ch = *p++)) {
-       if (bytes+1 < size)
-           *q++ = ch;
-       bytes++;
-   }
-
-   /* If size == 0 there is no space for a final null... */
-   if (size)
-       *q = '\0';
-   return bytes;
-}
-
+#ifndef HAVE_STRLCAT
 size_t strlcat(char *dst, const char *src, size_t size)
 {
    size_t bytes = 0;
@@ -56,7 +37,7 @@ size_t strlcat(char *dst, const char *src, size_t size)
    *q = '\0';
    return bytes;
 }
-#endif /* __GLIBC__ */
+#endif
 
 static char	uform[4096];
 static int	hasuform=0, cnt=0;

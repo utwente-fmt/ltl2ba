@@ -10,18 +10,23 @@ AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
 AC_PROG_CC
+#
+# for gnulib
+gl_EARLY
+
 AC_PROG_CXX
 AC_PROG_AWK
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-dnl Newer libtool allows this instead:
-dnl LT_PREREQ(2.2)
-dnl LT_INIT([disable-shared])
-AC_DISABLE_SHARED
+LT_PREREQ(2.2)
+LT_INIT([disable-shared win32-dll])
 AC_PROG_LIBTOOL
 AC_PROG_RANLIB
+
+# for gnulib
+gl_INIT
 
 AX_TRY_CFLAGS_IFELSE([-W -Wall])
 AX_TRY_CFLAGS_IFELSE([-pipe])
@@ -35,10 +40,10 @@ AC_CHECK_HEADERS([stdlib.h string.h sys/time.h])
 # Checks for typedefs, structures, and compiler characteristics.
 
 # Checks for library functions.
-AC_FUNC_MALLOC
-AC_CHECK_FUNCS([memset])
+AC_CHECK_FUNCS([memset strlcat])
 
 AC_CONFIG_FILES([
+  lib/Makefile
   Makefile
 ])
 AC_OUTPUT

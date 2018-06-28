@@ -140,12 +140,12 @@ enum {
 	AND,		/* 258 */
 	EQUIV,		/* 259 */
 	EVENTUALLY,	/* 260 */
-	FALSE,		/* 261 */
+	FALSE,	        /* 261 */
 	IMPLIES,	/* 262 */
 	NOT,		/* 263 */
 	OR,		/* 264 */
 	PREDICATE,	/* 265 */
-	TRUE,		/* 266 */
+	TRUE,   	/* 266 */
 	U_OPER,		/* 267 */
 	V_OPER		/* 268 */
 #ifdef NXT
@@ -251,7 +251,9 @@ typedef Node	*Nodeptr;
 
 #define Assert(x, y)	{ if (!(x)) { tl_explain(y); \
 			  Fatal(": assertion failed\n",(char *)0); } }
-#define min(x,y)        ((x<y)?x:y)
+#ifndef min
+# define min(x,y)        ((x<y)?x:y)
+#endif
 
 /* from main.c */
 extern FILE *tl_out;

@@ -143,7 +143,7 @@ int get_sym_id(char *s) /* finds the id of a predicate, or attributes one */
   return sym_id++;
 }
 
-ATrans *boolean(Node *p) /* computes the transitions to boolean nodes -> next & init */
+ATrans *_boolean(Node *p) /* computes the transitions to boolean nodes -> next & init */
 {
   ATrans *t1, *t2, *lft, *rgt, *result = (ATrans *)0;
   switch(p->ntyp) {
@@ -155,8 +155,8 @@ ATrans *boolean(Node *p) /* computes the transitions to boolean nodes -> next & 
   case FALSE:
     break;
   case AND:
-    lft = boolean(p->lft);
-    rgt = boolean(p->rgt);
+    lft = _boolean(p->lft);
+    rgt = _boolean(p->rgt);
     for(t1 = lft; t1; t1 = t1->nxt) {
       for(t2 = rgt; t2; t2 = t2->nxt) {
 	ATrans *tmp = merge_trans(t1, t2);
@@ -170,14 +170,14 @@ ATrans *boolean(Node *p) /* computes the transitions to boolean nodes -> next & 
     free_atrans(rgt, 1);
     break;
   case OR:
-    lft = boolean(p->lft);
+    lft = _boolean(p->lft);
     for(t1 = lft; t1; t1 = t1->nxt) {
       ATrans *tmp = dup_trans(t1);
       tmp->nxt = result;
       result = tmp;
     }
     free_atrans(lft, 1);
-    rgt = boolean(p->rgt);
+    rgt = _boolean(p->rgt);
     for(t1 = rgt; t1; t1 = t1->nxt) {
       ATrans *tmp = dup_trans(t1);
       tmp->nxt = result;
@@ -230,7 +230,7 @@ ATrans *build_alternating(Node *p) /* builds an alternating automaton for p */
 
 #ifdef NXT
   case NEXT:                                            
-    t = boolean(p->lft);
+    t = _boolean(p->lft);
     break;
 #endif
 
@@ -414,7 +414,7 @@ void mk_alternating(Node *p) /* generates an alternating automaton for p */
   sym_size = n_sym / (8 * sizeof(int)) + 1;
   
   final_set = make_set(-1, 0);
-  transition[0] = boolean(p); /* generates the alternating automaton */
+  transition[0] = _boolean(p); /* generates the alternating automaton */
 
   if(tl_verbose) {
     fprintf(tl_out, "\nAlternating automaton before simplification\n");
