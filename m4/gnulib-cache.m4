@@ -27,7 +27,7 @@
 
 
 # Specification in the form of a command-line invocation:
-#   gnulib-tool --import --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=autotools --no-conditional-dependencies --libtool --macro-prefix=gl --no-vc-files fprintf-posix getrusage sys_resource sys_time
+#   gnulib-tool --import --lib=libgnu --source-base=lib --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=autotools --conditional-dependencies --libtool --macro-prefix=gl --no-vc-files fprintf-posix getrusage sys_resource sys_time
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([])
@@ -45,6 +45,7 @@ gl_DOC_BASE([doc])
 gl_TESTS_BASE([tests])
 gl_LIB([libgnu])
 gl_MAKEFILE_NAME([])
+gl_CONDITIONAL_DEPENDENCIES
 gl_LIBTOOL
 gl_MACRO_PREFIX([gl])
 gl_PO_DOMAIN([])
