@@ -2,6 +2,7 @@
 
 autotools/
 ltl2ba
+ltl2ba.exe
 *.o
 *.lo
 *.la
