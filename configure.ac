@@ -23,7 +23,6 @@ AC_PROG_MAKE_SET
 LT_PREREQ(2.2)
 LT_INIT([disable-shared win32-dll])
 AC_PROG_LIBTOOL
-AC_PROG_RANLIB
 
 # for gnulib
 gl_INIT
