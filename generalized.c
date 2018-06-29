@@ -28,6 +28,9 @@
 /* http://www.lsv.ens-cachan.fr/~gastin                                   */
 
 #include "ltl2ba.h"
+#include "util.h"
+#include <sys/time.h>
+#include <sys/resource.h>
 
 /********************************************************************\
 |*              Structures and shared variables                     *|

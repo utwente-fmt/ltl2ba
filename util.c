@@ -1,4 +1,5 @@
 #include "ltl2ba.h"
+#include "util.h"
 
 FILE           *tl_out = NULL;
 

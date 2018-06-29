@@ -33,8 +33,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <sys/time.h>
-#include <sys/resource.h>
 
 typedef struct Symbol {
 char		*name;
@@ -230,8 +228,6 @@ int  same_sets(int *, int *, int);
 int  included_set(int *, int *, int);
 int  in_set(int *, int);
 int  *list_set(int *, int);
-
-int timeval_subtract (struct timeval *, struct timeval *, struct timeval *);
 
 #define ZN	(Node *)0
 #define ZS	(Symbol *)0
