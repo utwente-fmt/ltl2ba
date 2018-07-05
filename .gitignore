@@ -40,3 +40,6 @@ config.status
 # libtool
 /libtool
 .libs/
+
+libltdl/
+

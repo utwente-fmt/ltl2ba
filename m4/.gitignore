@@ -3,3 +3,7 @@ ltoptions.m4
 ltsugar.m4
 ltversion.m4
 lt~obsolete.m4
+
+ltargz.m4
+ltdl.m4
+
