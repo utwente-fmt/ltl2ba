@@ -27,6 +27,7 @@
 /* Send bug-reports and/or questions to Paul Gastin                       */
 /* http://www.lsv.ens-cachan.fr/~gastin                                   */
 
+#include "config.h"
 #include "ltl2ba.h"
 #include "util.h"
 #include <sys/time.h>
