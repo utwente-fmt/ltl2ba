@@ -45,8 +45,9 @@ extern void put_uform(void);
 
 extern FILE *tl_out;	
 BState *bstack, *bstates, *bremoved;
-BScc *scc_stack;
-int bstate_count = 0, btrans_count = 0, rank;
+static BScc *scc_stack;
+int bstate_count = 0, btrans_count = 0;
+static int rank;
 
 static int _accept;
 
